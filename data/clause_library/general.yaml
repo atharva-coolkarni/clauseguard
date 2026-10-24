@@ -1,0 +1,94 @@
+# Neutral clauses that make each generated agreement read like a real one.
+# They carry the label "neutral": they are not scored for risk, but they give the
+# clause splitter realistic material and make the risky clauses harder to spot.
+# Keep these genuinely ordinary; anything risky belongs in a category file.
+
+category: general
+title: General terms
+
+sections:
+  preamble:
+    - >-
+      This Rental Agreement is made at {city} on {agreement_date} between {landlord}, residing
+      at {landlord_address} (hereinafter called the "Landlord"), and {tenant}, presently
+      residing at {tenant_address} (hereinafter called the "Tenant").
+    - >-
+      THIS AGREEMENT OF TENANCY is executed at {city}, {state} on {agreement_date} by and
+      between {landlord} (the "Landlord") of the one part and {tenant} (the "Tenant") of the
+      other part.
+
+  premises:
+    - >-
+      The Landlord agrees to let out the residential flat bearing No. {flat_no}, {building},
+      {locality}, {city} (the "Premises"), together with the fittings listed in the Schedule,
+      to the Tenant.
+    - >-
+      The Premises let out under this Agreement is the {bhk} BHK flat No. {flat_no} in
+      {building}, {locality}, {city} - {pincode}, along with one covered parking space.
+
+  term:
+    - >-
+      This tenancy shall be for a period of {term_months_text} commencing on {start_date} and
+      ending on {end_date}, and may be renewed on mutually agreed terms.
+    - >-
+      The term of this Agreement is {term_months_text}, from {start_date} to {end_date}.
+
+  rent:
+    - >-
+      The Tenant shall pay a monthly rent of {rent} on or before the {due_day} day of each
+      calendar month by bank transfer to the Landlord's account.
+    - >-
+      The monthly rent for the Premises is {rent}, payable in advance on or before the
+      {due_day} of every month. The Landlord shall issue a receipt for every payment.
+
+  utilities:
+    - >-
+      The Tenant shall pay electricity charges as per the separate meter installed in the
+      Premises and water charges as billed by the society, directly to the authorities
+      concerned.
+    - >-
+      Electricity, piped gas and internet charges for the period of the tenancy shall be paid
+      by the Tenant as per actual consumption.
+
+  use:
+    - >-
+      The Premises shall be used by the Tenant only for residential purposes for the Tenant and
+      the Tenant's family.
+    - >-
+      The Tenant shall use the Premises for residence only and shall follow the bye-laws of the
+      housing society.
+
+  termination:
+    - >-
+      Either party may terminate this Agreement by giving the other one month's notice in
+      writing.
+    - >-
+      This Agreement may be ended by either the Landlord or the Tenant on one month's written
+      notice to the other party.
+
+  registration:
+    - >-
+      The stamp duty and registration charges for this Agreement shall be shared equally by the
+      Landlord and the Tenant.
+    - >-
+      The cost of stamp paper and registration of this Agreement shall be borne equally by both
+      parties.
+
+  jurisdiction:
+    - >-
+      Any dispute arising out of this Agreement shall be subject to the jurisdiction of the
+      appropriate authority or court at {city}.
+    - >-
+      This Agreement shall be governed by the laws of India and the tenancy laws in force in
+      {state}.
+
+  signature:
+    - >-
+      IN WITNESS WHEREOF, the parties have signed this Agreement on the date first mentioned
+      above.
+
+
+      LANDLORD: {landlord}                    TENANT: {tenant}
+
+
+      Witness 1: ____________________         Witness 2: ____________________

@@ -1,0 +1,65 @@
+{
+  "settings": {
+    "n": 100,
+    "seed": 42,
+    "risk_rate": 0.4,
+    "dev_fraction": 0.5
+  },
+  "agreements_by_split": {
+    "test": 46,
+    "dev": 54
+  },
+  "agreements_with_no_risky_clause": 29,
+  "scored_clauses": 300,
+  "by_category_and_label": {
+    "security_deposit": {
+      "risky": 40,
+      "fair": 60
+    },
+    "repairs_painting": {
+      "risky": 35,
+      "fair": 65
+    },
+    "landlord_entry": {
+      "risky": 42,
+      "fair": 58
+    }
+  },
+  "risky_by_severity": {
+    "medium": 47,
+    "high": 52,
+    "low": 18
+  },
+  "hard_negatives": 52,
+  "by_variant": {
+    "dep_fair_01": 10,
+    "dep_fair_02": 14,
+    "dep_fair_03": 20,
+    "dep_fair_04_hardneg": 16,
+    "dep_risky_01": 7,
+    "dep_risky_02": 9,
+    "dep_risky_03": 7,
+    "dep_risky_04": 8,
+    "dep_risky_05": 9,
+    "ent_fair_01": 17,
+    "ent_fair_02": 12,
+    "ent_fair_03": 14,
+    "ent_fair_04_hardneg": 15,
+    "ent_risky_01": 10,
+    "ent_risky_02": 10,
+    "ent_risky_03": 10,
+    "ent_risky_04": 12,
+    "rep_fair_01": 9,
+    "rep_fair_02": 11,
+    "rep_fair_03": 9,
+    "rep_fair_04_hardneg": 9,
+    "rep_fair_05": 15,
+    "rep_fair_06_hardneg": 12,
+    "rep_risky_01": 3,
+    "rep_risky_02": 10,
+    "rep_risky_03": 3,
+    "rep_risky_04": 8,
+    "rep_risky_05": 6,
+    "rep_risky_06": 5
+  }
+}

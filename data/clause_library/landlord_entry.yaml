@@ -1,0 +1,88 @@
+# Landlord entry and inspection clauses.
+# Baseline (India rules pack): under the Model Tenancy Act, 2021 the landlord
+# must give 24 hours' prior notice before entering the premises for repairs or
+# replacement. See security_deposit.yaml for the field descriptions.
+
+category: landlord_entry
+title: Landlord entry and inspection
+baseline: At least 24 hours' prior notice before the landlord enters (Model Tenancy Act, 2021).
+
+variants:
+  # ---------- fair ----------
+  - id: ent_fair_01
+    label: fair
+    severity: none
+    risk_type: none
+    why: 24 hours' written notice and reasonable hours.
+    text: >-
+      The Landlord may enter the Premises for inspection, repairs or replacement after giving
+      the Tenant at least 24 hours' prior written notice, and only between 8 a.m. and 8 p.m.
+
+  - id: ent_fair_02
+    label: fair
+    severity: none
+    risk_type: none
+    why: Notice required for routine entry; the emergency exception is narrow and requires telling the tenant.
+    text: >-
+      Except in an emergency, the Landlord shall give at least 24 hours' notice before entering
+      the Premises. In an emergency such as fire, gas leakage or major water leakage, the
+      Landlord may enter without notice and shall inform the Tenant immediately.
+
+  - id: ent_fair_03
+    label: fair
+    severity: none
+    risk_type: none
+    why: Viewings limited to the last month, with notice and at agreed times.
+    text: >-
+      During the last month of the tenancy, the Landlord may show the Premises to prospective
+      tenants after giving 24 hours' notice, at times mutually convenient to both parties.
+
+  # Hard negative: entry without notice, but only in a real emergency.
+  - id: ent_fair_04_hardneg
+    label: fair
+    severity: none
+    risk_type: none
+    why: Entry without notice is limited to genuine emergencies, with immediate intimation.
+    text: >-
+      Nothing in this Agreement shall prevent the Landlord from entering the Premises without
+      notice where it is necessary to prevent immediate danger to life or serious damage to the
+      building, provided the Tenant is informed at once.
+
+  # ---------- risky ----------
+  - id: ent_risky_01
+    label: risky
+    severity: high
+    risk_type: entry_without_notice
+    why: Landlord can enter at any time, with or without notice.
+    text: >-
+      The Landlord or his authorised agents shall have the right to enter the Premises at any
+      time, with or without notice, for the purpose of inspection.
+
+  - id: ent_risky_02
+    label: risky
+    severity: medium
+    risk_type: duplicate_key_entry
+    why: Landlord keeps a key and may enter in the tenant's absence whenever he chooses.
+    text: >-
+      The Landlord shall retain a duplicate key to the Premises and may enter the Premises in
+      the absence of the Tenant whenever he considers it necessary.
+
+  - id: ent_risky_03
+    label: risky
+    severity: medium
+    risk_type: notice_too_short
+    why: Notice period is shorter than 24 hours.
+    params:
+      notice_hours: [1, 2, 4]
+    text: >-
+      The Landlord may inspect the Premises at any time after informing the Tenant by phone or
+      message at least {notice_hours} hour(s) in advance.
+
+  - id: ent_risky_04
+    label: risky
+    severity: low
+    risk_type: unrestricted_viewings
+    why: Viewings by tenants or buyers allowed at any time during the whole tenancy.
+    text: >-
+      The Landlord may show the Premises to prospective tenants or buyers at any time during the
+      tenancy, and the Tenant shall not object to such visits.

@@ -1,0 +1,134 @@
+# Security deposit clauses.
+# Baseline (India rules pack): the Model Tenancy Act, 2021 caps the deposit for
+# residential premises at two months' rent. It applies only in states that have
+# adopted it, so the generator treats it as the reference, not as binding law.
+#
+# Each variant has:
+#   id         unique, never reused (labels point at it)
+#   label      fair | risky
+#   severity   none (fair) | low | medium | high
+#   risk_type  short machine-readable tag for what is wrong (or "none")
+#   why        one line a reviewer can check the model's explanation against
+#   params     optional: placeholder -> list of values to sample from
+#   text       the clause; {placeholders} are filled by the generator
+
+category: security_deposit
+title: Security deposit
+baseline: Deposit for residential premises capped at two months' rent (Model Tenancy Act, 2021).
+
+variants:
+  # ---------- fair ----------
+  - id: dep_fair_01
+    label: fair
+    severity: none
+    risk_type: none
+    why: Deposit within two months' rent, refunded when possession is handed back, deductions limited to dues.
+    params:
+      deposit_months: [1, 2]
+    text: >-
+      The Tenant has paid the Landlord an interest-free, refundable security deposit of
+      {deposit_amount}, equal to {deposit_months_text} rent. The Landlord shall refund the
+      deposit on the date the Tenant hands over vacant possession of the Premises, after
+      deducting only rent or utility charges that remain unpaid on that date.
+
+  - id: dep_fair_02
+    label: fair
+    severity: none
+    risk_type: none
+    why: Deposit within the cap, clear refund deadline, itemised deductions with receipts.
+    params:
+      deposit_months: [1, 2]
+      refund_days: [7, 15]
+    text: >-
+      A refundable security deposit of {deposit_amount} ({deposit_months_text} rent) is payable
+      on signing. Within {refund_days} days of the Tenant vacating, the Landlord shall return
+      the deposit together with an itemised statement of any deductions, supported by bills or
+      receipts.
+
+  - id: dep_fair_03
+    label: fair
+    severity: none
+    risk_type: none
+    why: Deductions restricted to unpaid dues and damage beyond normal wear and tear, with photo evidence.
+    params:
+      deposit_months: [2]
+    text: >-
+      The security deposit of {deposit_amount} may be adjusted only against (a) unpaid rent,
+      (b) unpaid electricity, water or maintenance bills, and (c) the reasonable cost of
+      repairing damage caused by the Tenant beyond normal wear and tear. Both parties shall
+      record the condition of the Premises with dated photographs at move-in and move-out.
+
+  # Hard negative: sounds strict, but every deduction is tied to a real, documented cost.
+  - id: dep_fair_04_hardneg
+    label: fair
+    severity: none
+    risk_type: none
+    why: Strict wording, but deductions are limited to actual dues and documented damage.
+    params:
+      deposit_months: [2]
+    text: >-
+      The Landlord shall be entitled to deduct from the security deposit of {deposit_amount}
+      any rent or utility dues outstanding on the date of vacating, and the cost of repairing
+      any damage caused by the Tenant, as shown by bills which the Landlord shall share with
+      the Tenant before making the deduction.
+
+  # ---------- risky ----------
+  - id: dep_risky_01
+    label: risky
+    severity: high
+    risk_type: deposit_above_cap
+    why: Deposit is more than two months' rent.
+    params:
+      deposit_months: [3, 4, 5, 6, 10]
+    text: >-
+      The Tenant shall pay a security deposit of {deposit_amount}, equal to {deposit_months_text}
+      rent, before taking possession of the Premises. The deposit shall be refunded without
+      interest when the Tenant vacates.
+
+  - id: dep_risky_02
+    label: risky
+    severity: high
+    risk_type: non_refundable_portion
+    why: Part of the deposit is kept by the landlord regardless of the premises' condition.
+    params:
+      deposit_months: [2]
+    text: >-
+      Out of the security deposit of {deposit_amount}, an amount equal to one month's rent shall
+      be non-refundable and shall be retained by the Landlord towards maintenance charges,
+      irrespective of the condition of the Premises at the time of vacating.
+
+  - id: dep_risky_03
+    label: risky
+    severity: medium
+    risk_type: no_refund_deadline
+    why: No date or deadline for the refund; it is left to the landlord's discretion.
+    params:
+      deposit_months: [1, 2]
+    text: >-
+      The security deposit of {deposit_amount} shall be refunded to the Tenant at the sole
+      discretion of the Landlord after the Tenant vacates the Premises, subject to such
+      deductions as the Landlord may consider appropriate.
+
+  - id: dep_risky_04
+    label: risky
+    severity: high
+    risk_type: unlimited_deductions
+    why: Landlord can deduct any amount without bills or proof.
+    params:
+      deposit_months: [2]
+    text: >-
+      The Landlord may deduct from the security deposit of {deposit_amount} any amount that he
+      deems fit towards repairs, cleaning, painting or replacement of fittings, and shall not be
+      required to produce any bills or receipts for such deductions.
+
+  - id: dep_risky_05
+    label: risky
+    severity: medium
+    risk_type: forfeiture_on_early_exit
+    why: Whole deposit is lost if the tenant leaves early for any reason, even with notice.
+    params:
+      deposit_months: [2]
+    text: >-
+      If the Tenant vacates the Premises before the expiry of the term for any reason whatsoever,
+      including after giving notice, the entire security deposit of {deposit_amount} shall stand
+      forfeited to the Landlord.
