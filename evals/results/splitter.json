@@ -51,6 +51,26 @@
         "numbered": 100
       }
     },
+    "no_space": {
+      "description": "No space after the number, as in \"1.Rent\"",
+      "precision": 1.0,
+      "recall": 1.0,
+      "risky_clause_recall": 1.0,
+      "agreements_split_exactly": 1.0,
+      "methods": {
+        "numbered": 100
+      }
+    },
+    "skipped_number": {
+      "description": "Clause 4 missing from the numbering (1, 2, 3, 5, ...)",
+      "precision": 1.0,
+      "recall": 1.0,
+      "risky_clause_recall": 1.0,
+      "agreements_split_exactly": 1.0,
+      "methods": {
+        "numbered": 100
+      }
+    },
     "pdf_combined": {
       "description": "Wrapped + \"1)\" numbering + no blank lines",
       "precision": 1.0,

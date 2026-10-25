@@ -4,6 +4,10 @@ Every agreement is assembled from the clause library in data/clause_library/,
 so the ground truth for each clause (category, fair/risky, severity, risk type)
 is known by construction. No real data is needed to start evaluating.
 
+Each agreement is assigned to the dev or test split. Every library clause has a
+separate dev and test wording, and an agreement uses only its split's wording,
+so test agreements contain no scored clause text that appears in dev.
+
 Usage:
     python evals/generate_agreements.py --n 100 --seed 42
     python evals/generate_agreements.py --n 20 --risk-rate 0.6 --out data/generated_small
@@ -54,6 +58,11 @@ CLAUSE_ORDER = [
 SWAPPABLE = [("utilities", "use"), ("repairs_painting", "landlord_entry")]
 
 VALID_SEVERITY = {"fair": {"none"}, "risky": {"low", "medium", "high"}}
+SPLITS = ("dev", "test")
+
+
+def placeholders(template: str) -> set[str]:
+    return {f for _, f, _, _ in string.Formatter().parse(template) if f}
 
 # Fictional profile data. Addresses and pincodes are random and not real places.
 CITIES = [
@@ -135,6 +144,9 @@ def load_library(library_dir: Path) -> tuple[dict, dict]:
     categories: dict[str, dict] = {}
     general: dict[str, list[str]] = {}
     seen_ids: set[str] = set()
+    # Every wording in the library must be unique, so no dev template can
+    # appear in a test agreement under another variant's name.
+    seen_wordings: dict[str, str] = {}
 
     for path in sorted(library_dir.glob("*.yaml")):
         data = yaml.safe_load(path.read_text(encoding="utf-8"))
@@ -154,6 +166,18 @@ def load_library(library_dir: Path) -> tuple[dict, dict]:
             for key, values in (v.get("params") or {}).items():
                 if not values:
                     raise ValueError(f"{vid}: param {key} has no values")
+            wordings = v.get("wordings") or {}
+            if set(wordings) != set(SPLITS):
+                raise ValueError(f"{vid}: needs exactly one 'dev' and one 'test' wording")
+            if " ".join(wordings["dev"].split()) == " ".join(wordings["test"].split()):
+                raise ValueError(f"{vid}: dev and test wordings must differ")
+            if placeholders(wordings["dev"]) != placeholders(wordings["test"]):
+                raise ValueError(f"{vid}: dev and test wordings use different placeholders")
+            for split in SPLITS:
+                key = " ".join(wordings[split].split())
+                if key in seen_wordings:
+                    raise ValueError(f"{vid}.{split}: same wording as {seen_wordings[key]}")
+                seen_wordings[key] = f"{vid}.{split}"
         labels = {v["label"] for v in data["variants"]}
         if labels != {"fair", "risky"}:
             raise ValueError(f"{path.name}: needs at least one fair and one risky variant")
@@ -231,7 +255,7 @@ def fill(template: str, values: dict, where: str) -> str:
         text = template.format_map(values)
     except KeyError as missing:
         raise KeyError(f"{where}: no value for placeholder {missing}") from None
-    leftover = [f for _, f, _, _ in string.Formatter().parse(text) if f]
+    leftover = placeholders(text)
     if leftover:
         raise ValueError(f"{where}: unfilled placeholders {leftover}")
     return text.strip()
@@ -271,7 +295,9 @@ def build_agreement(index: int, categories: dict, general: dict, rng: random.Ran
         pool = [v for v in categories[section]["variants"] if v["label"] == label]
         variant = rng.choice(pool)
         params = variant_values(variant, profile, rng)
-        text = fill(variant["text"], {**profile, **params}, variant["id"])
+        # Dev agreements use the dev wording, test agreements the test wording,
+        # so no test clause text is ever seen while tuning prompts on dev.
+        text = fill(variant["wordings"][split], {**profile, **params}, f"{variant['id']}.{split}")
         pieces.append((section, number, text, {
             "category": section, "variant_id": variant["id"], "label": variant["label"],
             "severity": variant["severity"], "risk_type": variant["risk_type"],
@@ -328,8 +354,17 @@ def verify(document: str, rows: list[dict]) -> None:
     for r in rows:
         if document[r["start"]:r["end"]] != r["text"]:
             raise AssertionError(f"{r['agreement_id']} clause {r['clause_number']}: offsets do not match text")
-        if document.count(r["text"]) < 1:
-            raise AssertionError(f"{r['agreement_id']}: clause text not found in document")
+
+
+def check_no_leakage(rows: list[dict]) -> int:
+    """Count scored test clauses whose filled-in text also appears in dev; should be 0.
+
+    This is a cheap sanity check on the output. The real guarantee comes from
+    load_library(), which requires every wording in the library to be unique.
+    """
+    dev = {" ".join(r["text"].split()) for r in rows if r["split"] == "dev" and r["label"] != "neutral"}
+    return sum(1 for r in rows
+               if r["split"] == "test" and r["label"] != "neutral" and " ".join(r["text"].split()) in dev)
 
 
 def main() -> None:
@@ -370,6 +405,9 @@ def main() -> None:
             f.write(json.dumps(s, ensure_ascii=False) + "\n")
 
     scored = [r for r in all_rows if r["label"] != "neutral"]
+    leaked = check_no_leakage(all_rows)
+    if leaked:
+        raise AssertionError(f"{leaked} test clauses reuse dev wording")
     manifest = {
         "settings": {"n": args.n, "seed": args.seed, "risk_rate": args.risk_rate,
                      "dev_fraction": args.dev_fraction},
@@ -381,6 +419,7 @@ def main() -> None:
         },
         "risky_by_severity": dict(Counter(r["severity"] for r in scored if r["label"] == "risky")),
         "hard_negatives": sum(1 for r in scored if r["variant_id"].endswith("_hardneg")),
+        "test_clauses_reusing_dev_wording": leaked,
         "by_variant": dict(sorted(Counter(r["variant_id"] for r in scored).items())),
     }
     (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
@@ -393,6 +432,7 @@ def main() -> None:
           f"hard negatives {manifest['hard_negatives']})")
     print(f"  agreements with no risky clause: {manifest['agreements_with_no_risky_clause']}")
     print("  all clause offsets verified against the agreement text")
+    print("  no test clause reuses dev wording")
 
 
 if __name__ == "__main__":

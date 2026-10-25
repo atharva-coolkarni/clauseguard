@@ -12,3 +12,4 @@ venv/
 
 # Scratch output (the committed eval set lives in data/generated/)
 data/generated_*/
+.pytest_cache/

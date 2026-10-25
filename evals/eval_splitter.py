@@ -41,6 +41,14 @@ def no_blank_lines(doc: str) -> str:
     return re.sub(r"\n\s*\n", "\n", doc)
 
 
+def skip_number(doc: str, missing: int = 4) -> str:
+    """Renumber so clause `missing` and later are shifted up by one: 1, 2, 3, 5, 6..."""
+    def shift(m: re.Match) -> str:
+        n = int(m.group(1))
+        return f"{n + 1 if n >= missing else n}. "
+    return re.sub(r"(?m)^(\d{1,2})\. ", shift, doc)
+
+
 # name -> (description, transform)
 FORMATS = {
     "original": ("As generated", lambda d: d),
@@ -48,6 +56,8 @@ FORMATS = {
     "paren_numbers": ('Numbered "1)" instead of "1."', lambda d: renumber(d, "{n}) ")),
     "clause_prefix": ('Numbered "Clause 1:"', lambda d: renumber(d, "Clause {n}: ")),
     "no_blank_lines": ("No blank lines between clauses", no_blank_lines),
+    "no_space": ('No space after the number, as in "1.Rent"', lambda d: renumber(d, "{n}.")),
+    "skipped_number": ("Clause 4 missing from the numbering (1, 2, 3, 5, ...)", skip_number),
     "pdf_combined": ("Wrapped + \"1)\" numbering + no blank lines",
                      lambda d: no_blank_lines(renumber(wrap(d), "{n}) "))),
     "unnumbered": ("Clause numbers removed", lambda d: renumber(d, "")),

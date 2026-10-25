@@ -29,6 +29,7 @@ class ClauseGuardState(TypedDict, total=False):
     preamble: str               # text before the first clause (parties, date)
     clauses: list[Clause]       # written by the splitter
     split_method: str           # "numbered" or "paragraphs"
+    split_warnings: list[str]   # gaps in numbering, fallback used; shown in the report
     # Parallel reviewers append to this list; operator.add merges their results
     # instead of letting one branch overwrite another.
     flags: Annotated[list[dict], operator.add]

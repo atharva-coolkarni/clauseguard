@@ -1,4 +1,4 @@
-# Repairs, maintenance and painting clauses.
+# Repairs, maintenance, cleaning and painting clauses.
 # Baseline (India rules pack): under the Model Tenancy Act, 2021 the landlord is
 # responsible for structural repairs and for whitewashing walls and painting
 # doors and windows; the tenant handles day-to-day items such as switches,
@@ -16,21 +16,31 @@ variants:
     severity: none
     risk_type: none
     why: Splits repairs the way the baseline does; painting stays with the landlord.
-    text: >-
-      The Landlord shall be responsible for structural repairs, whitewashing of walls and
-      painting of doors and windows. The Tenant shall attend to minor day-to-day repairs such as
-      replacement of switches and sockets, repair of taps and kitchen fixtures, and cleaning of
-      drains.
+    wordings:
+      dev: >-
+        The Landlord shall be responsible for structural repairs, whitewashing of walls and
+        painting of doors and windows. The Tenant shall attend to minor day-to-day repairs such as
+        replacement of switches and sockets, repair of taps and kitchen fixtures, and cleaning of
+        drains.
+      test: >-
+        Structural repairs, whitewashing of the walls and painting of doors and windows are the
+        responsibility of the Landlord. Minor routine repairs, such as fixing switches, sockets,
+        taps and kitchen fittings and keeping the drains clean, shall be handled by the Tenant.
 
   - id: rep_fair_02
     label: fair
     severity: none
     risk_type: none
     why: Normal wear and tear, including faded paint, is explicitly not charged to the tenant.
-    text: >-
-      Normal wear and tear arising from ordinary residential use, including fading or minor
-      marks on painted walls, shall not be treated as damage and shall not be charged to the
-      Tenant at the end of the tenancy.
+    wordings:
+      dev: >-
+        Normal wear and tear arising from ordinary residential use, including fading or minor
+        marks on painted walls, shall not be treated as damage and shall not be charged to the
+        Tenant at the end of the tenancy.
+      test: >-
+        The Tenant shall not be charged at the end of the tenancy for ordinary wear and tear caused
+        by normal residential use, such as faded paint or small marks on the walls; such wear and
+        tear shall not count as damage.
 
   - id: rep_fair_03
     label: fair
@@ -39,11 +49,17 @@ variants:
     why: Landlord must fix major repairs within a stated time, with a remedy if they do not.
     params:
       repair_days: [7, 15]
-    text: >-
-      The Tenant shall inform the Landlord in writing of any repair that is the Landlord's
-      responsibility. If the Landlord does not carry out the repair within {repair_days} days of
-      such notice, the Tenant may get it done and adjust the reasonable cost, supported by
-      receipts, against the next month's rent.
+    wordings:
+      dev: >-
+        The Tenant shall inform the Landlord in writing of any repair that is the Landlord's
+        responsibility. If the Landlord does not carry out the repair within {repair_days} days of
+        such notice, the Tenant may get it done and adjust the reasonable cost, supported by
+        receipts, against the next month's rent.
+      test: >-
+        Where a repair falls within the Landlord's responsibility, the Tenant shall notify the
+        Landlord in writing. Should the Landlord fail to complete the repair within {repair_days}
+        days of the notice, the Tenant may arrange the repair and set off the reasonable cost,
+        backed by receipts, against the following month's rent.
 
   # Hard negative: tenant pays, but only for damage they or their guests caused.
   - id: rep_fair_04_hardneg
@@ -51,20 +67,29 @@ variants:
     severity: none
     risk_type: none
     why: Tenant pays only for damage caused by the tenant, family or guests, excluding wear and tear.
-    text: >-
-      The Tenant shall bear the cost of repairing any damage to the Premises or its fittings
-      caused by the Tenant, members of the Tenant's family or the Tenant's guests, other than
-      normal wear and tear.
+    wordings:
+      dev: >-
+        The Tenant shall bear the cost of repairing any damage to the Premises or its fittings
+        caused by the Tenant, members of the Tenant's family or the Tenant's guests, other than
+        normal wear and tear.
+      test: >-
+        Any damage to the Premises or its fittings caused by the Tenant, the Tenant's family
+        members or visitors shall be repaired at the Tenant's cost, except ordinary wear and tear.
 
   - id: rep_fair_05
     label: fair
     severity: none
     risk_type: none
     why: Asks for ordinary cleanliness, as at move-in; no professional cleaning or painting at the tenant's cost.
-    text: >-
-      The Tenant shall return the Premises in a reasonably clean condition, similar to its
-      condition at the start of the tenancy, normal wear and tear excepted. The Tenant shall
-      not be required to pay for professional deep cleaning or repainting.
+    wordings:
+      dev: >-
+        The Tenant shall return the Premises in a reasonably clean condition, similar to its
+        condition at the start of the tenancy, normal wear and tear excepted. The Tenant shall
+        not be required to pay for professional deep cleaning or repainting.
+      test: >-
+        At the end of the tenancy the Tenant shall leave the Premises reasonably clean, in much the
+        same state as when the Tenant moved in, allowing for normal wear and tear. No charge for
+        professional deep cleaning or repainting shall be made to the Tenant.
 
   # Hard negative: a cleaning duty, but only removing belongings and rubbish.
   - id: rep_fair_06_hardneg
@@ -72,9 +97,13 @@ variants:
     severity: none
     risk_type: none
     why: A cleaning duty, but limited to clearing belongings and rubbish; no charge for professional work.
-    text: >-
-      On vacating, the Tenant shall remove all personal belongings and rubbish and leave the
-      Premises broom-clean, with all keys returned to the Landlord.
+    wordings:
+      dev: >-
+        On vacating, the Tenant shall remove all personal belongings and rubbish and leave the
+        Premises broom-clean, with all keys returned to the Landlord.
+      test: >-
+        When moving out, the Tenant shall clear out all personal belongings and waste, sweep the
+        Premises clean and hand over all keys to the Landlord.
 
   # ---------- risky ----------
   - id: rep_risky_01
@@ -82,10 +111,15 @@ variants:
     severity: high
     risk_type: tenant_pays_repainting
     why: Tenant must pay for full repainting at move-out regardless of the walls' condition.
-    text: >-
-      At the time of vacating the Premises, the Tenant shall get the entire Premises repainted
-      at the Tenant's own cost, irrespective of the condition of the walls or the period of
-      occupation.
+    wordings:
+      dev: >-
+        At the time of vacating the Premises, the Tenant shall get the entire Premises repainted
+        at the Tenant's own cost, irrespective of the condition of the walls or the period of
+        occupation.
+      test: >-
+        The Tenant shall, before handing back the Premises, have all the rooms freshly painted at
+        the Tenant's expense, regardless of how long the Tenant has stayed or the state of the
+        walls.
 
   - id: rep_risky_02
     label: risky
@@ -94,47 +128,72 @@ variants:
     why: A fixed painting and cleaning amount is deducted whatever the actual condition or cost.
     params:
       painting_charge: [8000, 12000, 15000, 20000, 25000]
-    text: >-
-      A fixed amount of {painting_charge} towards painting and deep cleaning shall be deducted
-      from the security deposit when the Tenant vacates, whether or not any painting or cleaning
-      is required.
+    wordings:
+      dev: >-
+        A fixed amount of {painting_charge} towards painting and deep cleaning shall be deducted
+        from the security deposit when the Tenant vacates, whether or not any painting or cleaning
+        is required.
+      test: >-
+        When the Tenant moves out, {painting_charge} shall be deducted from the security deposit
+        as a fixed charge for painting and cleaning, irrespective of whether such work is actually
+        needed.
 
   - id: rep_risky_03
     label: risky
     severity: medium
     risk_type: tenant_pays_structural
     why: Shifts structural repairs and seepage, normally the landlord's duty, onto the tenant.
-    text: >-
-      All repairs of whatever nature, including structural repairs, roof leakage, seepage and
-      plumbing work inside the walls, shall be carried out by the Tenant at the Tenant's own
-      cost during the tenancy.
+    wordings:
+      dev: >-
+        All repairs of whatever nature, including structural repairs, roof leakage, seepage and
+        plumbing work inside the walls, shall be carried out by the Tenant at the Tenant's own
+        cost during the tenancy.
+      test: >-
+        The Tenant shall carry out at the Tenant's own expense every kind of repair during the
+        tenancy, including structural defects, leaks from the roof, dampness and seepage, and
+        concealed plumbing.
 
   - id: rep_risky_04
     label: risky
     severity: medium
     risk_type: brand_new_condition
     why: Requires 'brand-new' condition, which ignores normal wear and tear.
-    text: >-
-      The Tenant shall hand over the Premises in brand-new condition, failing which the
-      Landlord shall be entitled to recover the cost of restoring the Premises to such
-      condition from the Tenant.
+    wordings:
+      dev: >-
+        The Tenant shall hand over the Premises in brand-new condition, failing which the
+        Landlord shall be entitled to recover the cost of restoring the Premises to such
+        condition from the Tenant.
+      test: >-
+        The Premises shall be returned by the Tenant in the same condition as a newly built flat,
+        and any cost the Landlord incurs to bring it to that condition shall be payable by the
+        Tenant.
 
   - id: rep_risky_06
     label: risky
     severity: high
     risk_type: tenant_pays_cleaning_and_painting
     why: Tenant must pay for professional deep cleaning and repainting before leaving, whatever the condition.
-    text: >-
-      Before vacating the Premises, the Tenant shall, at the Tenant's own cost, get the entire
-      Premises professionally deep cleaned and repainted through a vendor approved by the
-      Landlord, irrespective of the condition of the Premises, failing which the cost shall be
-      recovered from the security deposit.
+    wordings:
+      dev: >-
+        Before vacating the Premises, the Tenant shall, at the Tenant's own cost, get the entire
+        Premises professionally deep cleaned and repainted through a vendor approved by the
+        Landlord, irrespective of the condition of the Premises, failing which the cost shall be
+        recovered from the security deposit.
+      test: >-
+        Whatever the condition of the Premises, the Tenant shall pay for a professional deep
+        cleaning and a full repainting by a vendor chosen by the Landlord before moving out; if the
+        Tenant does not, the Landlord may take the cost out of the security deposit.
 
   - id: rep_risky_05
     label: risky
     severity: low
     risk_type: appliance_servicing_on_tenant
     why: Puts the cost of servicing the landlord's appliances on the tenant.
-    text: >-
-      The Tenant shall bear the cost of periodic servicing and repair of all appliances provided
-      by the Landlord, including air conditioners, geysers, water purifiers and the refrigerator.
+    wordings:
+      dev: >-
+        The Tenant shall bear the cost of periodic servicing and repair of all appliances provided
+        by the Landlord, including air conditioners, geysers, water purifiers and the refrigerator.
+      test: >-
+        All appliances supplied by the Landlord, such as the air conditioners, geyser, water
+        purifier and refrigerator, shall be serviced and repaired at the Tenant's expense
+        throughout the tenancy.

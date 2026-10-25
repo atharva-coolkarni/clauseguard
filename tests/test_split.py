@@ -1,3 +1,5 @@
+import pytest
+
 from clauseguard.graph.nodes.split import split_clauses, split_node
 
 
@@ -109,5 +111,73 @@ def test_unnumbered_text_falls_back_to_paragraphs():
 
 def test_node_returns_state_update():
     update = split_node({"document_text": STANDARD})
-    assert set(update) == {"clauses", "preamble", "split_method"}
+    assert set(update) == {"clauses", "preamble", "split_method", "split_warnings"}
     assert len(update["clauses"]) == 3
+    assert update["split_warnings"] == []
+
+
+# ---- added after the first evaluation exposed these failures ----
+
+def test_skipped_number_keeps_later_clauses_separate():
+    text = "1. Rent.\n2. Deposit.\n3. Repairs.\n5. Entry.\n6. Notice.\n"
+    r = split_clauses(text)
+    assert numbers(r) == [1, 2, 3, 5, 6]
+    assert r["clauses"][2]["text"] == "Repairs."
+    assert len(r["warnings"]) == 1 and "clause 4 was not found" in r["warnings"][0]
+    assert_offsets(text, r)
+
+
+def test_gap_larger_than_limit_is_not_bridged():
+    # 3 -> 9 is too large a jump to be a missing clause, so "9." stays inside clause 3.
+    text = "1. Rent.\n2. Deposit.\n3. Repairs, see item\n9. of the schedule.\n"
+    r = split_clauses(text)
+    assert numbers(r) == [1, 2, 3]
+    assert "9. of the schedule" in r["clauses"][2]["text"]
+
+
+def test_no_space_after_marker():
+    text = "1.Rent.\n2.Deposit.\n3)Repairs.\n4.Entry.\n"
+    r = split_clauses(text)
+    assert numbers(r) == [1, 2, 3, 4]
+    assert r["clauses"][0]["text"] == "Rent."
+    assert_offsets(text, r)
+
+
+def test_marker_on_its_own_line():
+    text = "1.\nRent is due monthly.\n2.\nDeposit.\n3.\nRepairs.\n"
+    r = split_clauses(text)
+    assert numbers(r) == [1, 2, 3]
+    assert r["clauses"][0]["text"] == "Rent is due monthly."
+
+
+def test_decimal_and_time_at_line_start_are_not_markers():
+    text = "1. Rent is\n10.30 a.m. on the 5th.\n2. Deposit of\n1.5 lakh.\n3. Repairs.\n"
+    r = split_clauses(text)
+    assert numbers(r) == [1, 2, 3]
+    assert "10.30 a.m." in r["clauses"][0]["text"]
+    assert "1.5 lakh" in r["clauses"][1]["text"]
+
+
+def test_stray_higher_number_inside_clause_does_not_hijack_sequence():
+    # With a greedy scan that allows gaps, "5. stray" would be taken as clause 5
+    # and the real clauses 4 and 5 would be lost. The longest chain avoids that.
+    text = "1. A.\n2. B.\n3. C includes:\n5. stray item\n4. D.\n5. E.\n6. F.\n"
+    r = split_clauses(text)
+    assert numbers(r) == [1, 2, 3, 4, 5, 6]
+    assert "5. stray item" in r["clauses"][2]["text"]
+    assert r["warnings"] == []
+
+
+def test_paragraph_fallback_reports_a_warning():
+    r = split_clauses("The rent is due.\n\nThe deposit is two months' rent.\n")
+    assert r["method"] == "paragraphs"
+    assert r["warnings"] and "No clause numbering" in r["warnings"][0]
+
+
+@pytest.mark.xfail(strict=True, reason="Known limitation: a numbered list in the preamble "
+                   "is taken as clause 1. Ties are broken towards the earlier marker, which is "
+                   "right for lists nested inside clauses but wrong here.")
+def test_numbered_list_in_preamble():
+    text = "Parties:\n1. Mr A\n\n1. Rent.\n2. Deposit.\n3. Repairs.\n"
+    r = split_clauses(text)
+    assert r["clauses"][0]["text"] == "Rent."

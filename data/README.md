@@ -22,6 +22,12 @@ The same seed always gives the same files. Useful options: `--risk-rate 0.6` for
 
 Tune prompts on the `dev` split only, and report final numbers on `test`.
 
+## Dev and test never share clause wording
+
+Every variant in the library is written twice: a `dev` wording and a `test` wording with the same meaning and the same placeholders. A dev agreement uses only dev wordings and a test agreement only test wordings. So when you tune prompts on dev, the test score measures how the reviewer handles wording it has never seen, not how well it remembers dev sentences.
+
+The generator enforces this: it refuses a library where two wordings are identical, and it checks the output for any test clause that also appears in dev. Each risk type still appears in both splits, so every kind of risk can be tuned on dev and measured on test. Neutral clauses (rent, term, utilities) are shared between splits, since they carry no risk label.
+
 ## The clause library (`data/clause_library/`)
 
 | File | Fair | Risky | Notes |
@@ -35,4 +41,4 @@ A **hard negative** is a fair clause that sounds strict, such as "the tenant pay
 
 ## Adding a category
 
-Copy one of the category files, give every variant a new unique `id`, include at least one fair and one risky variant, then add the category name to `RISK_CATEGORIES` and `CLAUSE_ORDER` in `evals/generate_agreements.py`. The script validates the library on every run.
+Copy one of the category files, give every variant a new unique `id` and two different wordings (`dev` and `test`), include at least one fair and one risky variant, then add the category name to `RISK_CATEGORIES` and `CLAUSE_ORDER` in `evals/generate_agreements.py`. The script validates the library on every run.

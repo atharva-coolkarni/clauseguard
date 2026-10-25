@@ -31,6 +31,7 @@
     "low": 18
   },
   "hard_negatives": 52,
+  "test_clauses_reusing_dev_wording": 0,
   "by_variant": {
     "dep_fair_01": 10,
     "dep_fair_02": 14,

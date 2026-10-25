@@ -10,7 +10,11 @@
 #   risk_type  short machine-readable tag for what is wrong (or "none")
 #   why        one line a reviewer can check the model's explanation against
 #   params     optional: placeholder -> list of values to sample from
-#   text       the clause; {placeholders} are filled by the generator
+#   wordings   the same clause written two ways: "dev" is used in dev-split
+#              agreements, "test" in test-split agreements. Keeping them apart
+#              means prompts tuned on dev are scored on wording they never saw.
+#              Both wordings must mean the same thing and use the same
+#              {placeholders}.
 
 category: security_deposit
 title: Security deposit
@@ -25,11 +29,17 @@ variants:
     why: Deposit within two months' rent, refunded when possession is handed back, deductions limited to dues.
     params:
       deposit_months: [1, 2]
-    text: >-
-      The Tenant has paid the Landlord an interest-free, refundable security deposit of
-      {deposit_amount}, equal to {deposit_months_text} rent. The Landlord shall refund the
-      deposit on the date the Tenant hands over vacant possession of the Premises, after
-      deducting only rent or utility charges that remain unpaid on that date.
+    wordings:
+      dev: >-
+        The Tenant has paid the Landlord an interest-free, refundable security deposit of
+        {deposit_amount}, equal to {deposit_months_text} rent. The Landlord shall refund the
+        deposit on the date the Tenant hands over vacant possession of the Premises, after
+        deducting only rent or utility charges that remain unpaid on that date.
+      test: >-
+        On signing this Agreement, the Tenant has deposited {deposit_amount}
+        ({deposit_months_text} rent) with the Landlord as security. This deposit carries no
+        interest and shall be returned to the Tenant when vacant possession is handed back,
+        less only any rent or utility bills still unpaid on that day.
 
   - id: dep_fair_02
     label: fair
@@ -39,11 +49,17 @@ variants:
     params:
       deposit_months: [1, 2]
       refund_days: [7, 15]
-    text: >-
-      A refundable security deposit of {deposit_amount} ({deposit_months_text} rent) is payable
-      on signing. Within {refund_days} days of the Tenant vacating, the Landlord shall return
-      the deposit together with an itemised statement of any deductions, supported by bills or
-      receipts.
+    wordings:
+      dev: >-
+        A refundable security deposit of {deposit_amount} ({deposit_months_text} rent) is payable
+        on signing. Within {refund_days} days of the Tenant vacating, the Landlord shall return
+        the deposit together with an itemised statement of any deductions, supported by bills or
+        receipts.
+      test: >-
+        The Tenant shall keep with the Landlord a refundable deposit of {deposit_amount}, being
+        {deposit_months_text} rent. The Landlord shall repay it within {refund_days} days after the
+        Tenant moves out, and shall give the Tenant a written list of any amounts deducted along
+        with the supporting bills.
 
   - id: dep_fair_03
     label: fair
@@ -52,11 +68,17 @@ variants:
     why: Deductions restricted to unpaid dues and damage beyond normal wear and tear, with photo evidence.
     params:
       deposit_months: [2]
-    text: >-
-      The security deposit of {deposit_amount} may be adjusted only against (a) unpaid rent,
-      (b) unpaid electricity, water or maintenance bills, and (c) the reasonable cost of
-      repairing damage caused by the Tenant beyond normal wear and tear. Both parties shall
-      record the condition of the Premises with dated photographs at move-in and move-out.
+    wordings:
+      dev: >-
+        The security deposit of {deposit_amount} may be adjusted only against (a) unpaid rent,
+        (b) unpaid electricity, water or maintenance bills, and (c) the reasonable cost of
+        repairing damage caused by the Tenant beyond normal wear and tear. Both parties shall
+        record the condition of the Premises with dated photographs at move-in and move-out.
+      test: >-
+        No deduction shall be made from the deposit of {deposit_amount} except for rent arrears,
+        pending utility or society maintenance bills, and the reasonable repair cost of damage
+        caused by the Tenant, excluding ordinary wear and tear. Dated photographs of the Premises
+        shall be taken by both parties when the Tenant moves in and when the Tenant moves out.
 
   # Hard negative: sounds strict, but every deduction is tied to a real, documented cost.
   - id: dep_fair_04_hardneg
@@ -66,11 +88,17 @@ variants:
     why: Strict wording, but deductions are limited to actual dues and documented damage.
     params:
       deposit_months: [2]
-    text: >-
-      The Landlord shall be entitled to deduct from the security deposit of {deposit_amount}
-      any rent or utility dues outstanding on the date of vacating, and the cost of repairing
-      any damage caused by the Tenant, as shown by bills which the Landlord shall share with
-      the Tenant before making the deduction.
+    wordings:
+      dev: >-
+        The Landlord shall be entitled to deduct from the security deposit of {deposit_amount}
+        any rent or utility dues outstanding on the date of vacating, and the cost of repairing
+        any damage caused by the Tenant, as shown by bills which the Landlord shall share with
+        the Tenant before making the deduction.
+      test: >-
+        Any rent or utility charges remaining unpaid when the Tenant vacates, and the cost of
+        making good any damage caused by the Tenant, may be recovered by the Landlord out of the
+        security deposit of {deposit_amount}, provided that the Landlord first shows the Tenant
+        the relevant bills.
 
   # ---------- risky ----------
   - id: dep_risky_01
@@ -80,10 +108,15 @@ variants:
     why: Deposit is more than two months' rent.
     params:
       deposit_months: [3, 4, 5, 6, 10]
-    text: >-
-      The Tenant shall pay a security deposit of {deposit_amount}, equal to {deposit_months_text}
-      rent, before taking possession of the Premises. The deposit shall be refunded without
-      interest when the Tenant vacates.
+    wordings:
+      dev: >-
+        The Tenant shall pay a security deposit of {deposit_amount}, equal to {deposit_months_text}
+        rent, before taking possession of the Premises. The deposit shall be refunded without
+        interest when the Tenant vacates.
+      test: >-
+        Before moving in, the Tenant shall deposit {deposit_amount} with the Landlord as security,
+        which is {deposit_months_text} rent. No interest shall be payable on this amount, and it
+        shall be returned at the end of the tenancy.
 
   - id: dep_risky_02
     label: risky
@@ -92,10 +125,15 @@ variants:
     why: Part of the deposit is kept by the landlord regardless of the premises' condition.
     params:
       deposit_months: [2]
-    text: >-
-      Out of the security deposit of {deposit_amount}, an amount equal to one month's rent shall
-      be non-refundable and shall be retained by the Landlord towards maintenance charges,
-      irrespective of the condition of the Premises at the time of vacating.
+    wordings:
+      dev: >-
+        Out of the security deposit of {deposit_amount}, an amount equal to one month's rent shall
+        be non-refundable and shall be retained by the Landlord towards maintenance charges,
+        irrespective of the condition of the Premises at the time of vacating.
+      test: >-
+        One month's rent out of the security deposit of {deposit_amount} shall not be returned to
+        the Tenant in any circumstances and shall be kept by the Landlord as a maintenance fee,
+        whatever the state of the Premises when the Tenant leaves.
 
   - id: dep_risky_03
     label: risky
@@ -104,10 +142,15 @@ variants:
     why: No date or deadline for the refund; it is left to the landlord's discretion.
     params:
       deposit_months: [1, 2]
-    text: >-
-      The security deposit of {deposit_amount} shall be refunded to the Tenant at the sole
-      discretion of the Landlord after the Tenant vacates the Premises, subject to such
-      deductions as the Landlord may consider appropriate.
+    wordings:
+      dev: >-
+        The security deposit of {deposit_amount} shall be refunded to the Tenant at the sole
+        discretion of the Landlord after the Tenant vacates the Premises, subject to such
+        deductions as the Landlord may consider appropriate.
+      test: >-
+        The Landlord shall return the security deposit of {deposit_amount}, after making whatever
+        deductions he thinks fit, at such time after the Tenant has vacated as the Landlord may
+        decide.
 
   - id: dep_risky_04
     label: risky
@@ -116,10 +159,15 @@ variants:
     why: Landlord can deduct any amount without bills or proof.
     params:
       deposit_months: [2]
-    text: >-
-      The Landlord may deduct from the security deposit of {deposit_amount} any amount that he
-      deems fit towards repairs, cleaning, painting or replacement of fittings, and shall not be
-      required to produce any bills or receipts for such deductions.
+    wordings:
+      dev: >-
+        The Landlord may deduct from the security deposit of {deposit_amount} any amount that he
+        deems fit towards repairs, cleaning, painting or replacement of fittings, and shall not be
+        required to produce any bills or receipts for such deductions.
+      test: >-
+        The Landlord shall have the right to recover from the security deposit of {deposit_amount}
+        such sums as he considers proper for repairs, cleaning, painting or replacement of any
+        items, without being obliged to show any bill or receipt to the Tenant.
 
   - id: dep_risky_05
     label: risky
@@ -128,7 +176,12 @@ variants:
     why: Whole deposit is lost if the tenant leaves early for any reason, even with notice.
     params:
       deposit_months: [2]
-    text: >-
-      If the Tenant vacates the Premises before the expiry of the term for any reason whatsoever,
-      including after giving notice, the entire security deposit of {deposit_amount} shall stand
-      forfeited to the Landlord.
+    wordings:
+      dev: >-
+        If the Tenant vacates the Premises before the expiry of the term for any reason whatsoever,
+        including after giving notice, the entire security deposit of {deposit_amount} shall stand
+        forfeited to the Landlord.
+      test: >-
+        Should the Tenant leave the Premises before the end of the term, whatever the reason and
+        whether or not notice has been given, the Tenant shall lose the whole security deposit of
+        {deposit_amount}.
