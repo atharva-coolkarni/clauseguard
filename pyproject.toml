@@ -1,0 +1,9 @@
+[project]
+name = "clauseguard"
+version = "0.1.0"
+description = "Agentic reviewer for Indian rental agreements"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

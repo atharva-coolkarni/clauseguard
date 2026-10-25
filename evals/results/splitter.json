@@ -1,0 +1,75 @@
+{
+  "agreements": 100,
+  "formats": {
+    "original": {
+      "description": "As generated",
+      "precision": 1.0,
+      "recall": 1.0,
+      "risky_clause_recall": 1.0,
+      "agreements_split_exactly": 1.0,
+      "methods": {
+        "numbered": 100
+      }
+    },
+    "pdf_wrapped": {
+      "description": "Lines wrapped at 80 characters, as text copied from a PDF",
+      "precision": 1.0,
+      "recall": 1.0,
+      "risky_clause_recall": 1.0,
+      "agreements_split_exactly": 1.0,
+      "methods": {
+        "numbered": 100
+      }
+    },
+    "paren_numbers": {
+      "description": "Numbered \"1)\" instead of \"1.\"",
+      "precision": 1.0,
+      "recall": 1.0,
+      "risky_clause_recall": 1.0,
+      "agreements_split_exactly": 1.0,
+      "methods": {
+        "numbered": 100
+      }
+    },
+    "clause_prefix": {
+      "description": "Numbered \"Clause 1:\"",
+      "precision": 1.0,
+      "recall": 1.0,
+      "risky_clause_recall": 1.0,
+      "agreements_split_exactly": 1.0,
+      "methods": {
+        "numbered": 100
+      }
+    },
+    "no_blank_lines": {
+      "description": "No blank lines between clauses",
+      "precision": 1.0,
+      "recall": 1.0,
+      "risky_clause_recall": 1.0,
+      "agreements_split_exactly": 1.0,
+      "methods": {
+        "numbered": 100
+      }
+    },
+    "pdf_combined": {
+      "description": "Wrapped + \"1)\" numbering + no blank lines",
+      "precision": 1.0,
+      "recall": 1.0,
+      "risky_clause_recall": 1.0,
+      "agreements_split_exactly": 1.0,
+      "methods": {
+        "numbered": 100
+      }
+    },
+    "unnumbered": {
+      "description": "Clause numbers removed",
+      "precision": 0.9167,
+      "recall": 1.0,
+      "risky_clause_recall": 1.0,
+      "agreements_split_exactly": 0.0,
+      "methods": {
+        "paragraphs": 100
+      }
+    }
+  }
+}
